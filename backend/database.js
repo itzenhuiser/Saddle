@@ -23,6 +23,11 @@ db.connect(err => {
   }
   console.log('Connected to the MySQL Server');
 });
+
+
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 // Function to pull all data from the Company table
 const getAllCompanies = () => {
   const query = 'SELECT * FROM Company';
@@ -47,6 +52,8 @@ app.post('/login', (req, res) => {
       } else {
         if (results.length > 0) {
           res.status(200).send('Login successful');
+          console.log('User is logged in');
+
         } else {
           res.status(401).send('Invalid username or password');
         }
