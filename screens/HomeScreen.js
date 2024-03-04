@@ -1,7 +1,30 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import React, { useEffect } from 'react';
+import { View, Image, Button, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { useAuth } from './AuthContext'; // Adjust the path as necessary
 
-//const Stack = createNativeStackNavigator();
 const HomeScreen = () => {
+  const navigation = useNavigation();
+  const { user, logout } = useAuth();
+
+  useEffect(() => {
+    // Only attempt to set navigation options if the user object exists
+    if (user) {
+      navigation.setOptions({
+        headerTitle: `Hello, ${user.username}`,
+        headerRight: () => (
+          <Button onPress={() => logout()} title="Logout" color="#000" /> // Adjust button color as needed
+        ),
+      });
+    } else {
+      // Default options when no user is logged in
+      navigation.setOptions({
+        headerTitle: 'Welcome',
+        headerRight: null, // No logout button when no user is logged in
+      });
+    }
+  }, [navigation, user, logout]); // Re-run when user or logout changes
+  
   return (
     <View style={styles.wrap}>
       <Image style={styles.item} source={require("./images/drone.jpg")} />

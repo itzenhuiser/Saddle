@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, Text } from 'react-native';
 import { useAuth } from './AuthContext';
 
 
@@ -14,10 +14,7 @@ const LoginScreen = ({ navigation }) => {
 
 
   const handleLogin = async () => {
-    setLoginFailed(false);
     try {
-      // Replace 'http://localhost:3000' with the actual IP address of your server
-      // When running on an actual device, 'localhost' will not work
       const response = await fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: {
@@ -26,26 +23,22 @@ const LoginScreen = ({ navigation }) => {
         body: JSON.stringify({ username, password }),
       });
       
-      const data = await response.json();
-
-      if (response.status === 200) {
+      if (response.ok) {
+        setLoginFailed(false);
         console.log('Logging in');
         login({ username: username });
         console.log('Navigating to Home');
         navigation.navigate('Home');
-
       } else {
-        // If the server responds with a status other than 200, assume login failed
-        Alert.alert('Failure', 'Login failed: ' + data);
-        setLoginFailed(true); // Step 2: Update loginFailed state on failure
-
-
+        console.log('failed logging in');
+        setLoginFailed(true);
       }
     } catch (error) {
-      // Handle network error
+      console.error('Login error', error);
       Alert.alert('Network error', 'Could not connect to the server');
     }
   };
+  
 
   return (
     <View style={styles.container}>
@@ -62,10 +55,11 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Login" onPress={handleLogin} />
-      {loginFailed && ( // Step 3: Conditionally render the error message
+      {loginFailed && (
         <Text style={styles.errorMessage}>Invalid credentials</Text>
       )}
+      <Button title="Login" onPress={handleLogin} />
+
     </View>
   );
 };
@@ -74,19 +68,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+  text: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 20,
+    color: 'white', // Ensure text is visible against the black background
+    width: '80%', // Adjust based on your layout preferences
     padding: 10,
   },
-  errorMessage: { // Style for the error message
-    color: 'red',
-    textAlign: 'center',
-    marginTop: 10,
+  errorMessage: {
+    color: 'red', // This will make the message stand out against the black background
+    fontSize: 16, // Adjust the size as needed
+    marginTop: 5, // Add some space above the message
+    marginBottom: 10,
   },
 });
 
