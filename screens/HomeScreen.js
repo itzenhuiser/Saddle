@@ -1,23 +1,75 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import React, { Component, useState } from "react";
+import { View, Text, Image, StyleSheet, FlatList } from "react-native";
+import { SearchBar } from "react-native-elements";
 
-//const Stack = createNativeStackNavigator();
-const HomeScreen = () => {
-  return (
-    <View style={styles.wrap}>
-      <Image style={styles.item} source={require("./images/drone.jpg")} />
-      <Image
-        style={styles.item}
-        source={require("./images/iphone15black.jpg")}
-      />
-      <Image style={styles.item} source={require("./images/goldfish.jpg")} />
-      <Image style={styles.item} source={require("./images/ritz.jpg")} />
-      <Image style={styles.item} source={require("./images/cheezit.jpg")} />
-      <Image style={styles.item} source={require("./images/oreo.jpg")} />
-    </View>
-  );
-};
+const [images, setimages] = useState([
+  require("./images/drone.jpg"),
+  require("./images/iphone15black.jpg"),
+  require("./images/goldfish.jpg"),
+  require("./images/ritz.jpg"),
+  require("./images/cheezit.jpg"),
+  require("./images/oreo.jpg"),
+]);
 
-export default HomeScreen;
+export default class HomeScreen extends React.Component {
+  state = {
+    search: "",
+  };
+
+  updateSearch = (search) => {
+    this.setState({ search });
+  };
+
+  render() {
+    const { search } = this.state;
+
+    return (
+      <View>
+        <SearchBar
+          style={(borderRadius = 5)}
+          placeholder="Search"
+          onChangeText={this.updateSearch}
+          value={search}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        <View style={styles.wrap}>
+          <Image style={styles.item} source={require("./images/drone.jpg")} />
+          <Image
+            style={styles.item}
+            source={require("./images/iphone15black.jpg")}
+          />
+          <Image
+            style={styles.item}
+            source={require("./images/goldfish.jpg")}
+          />
+          <Image style={styles.item} source={require("./images/ritz.jpg")} />
+          <Image style={styles.item} source={require("./images/cheezit.jpg")} />
+          <Image style={styles.item} source={require("./images/oreo.jpg")} />
+        </View>
+        <FlatList
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={images}
+          renderItem={({ item, index }) => (
+            <Image
+              source={item}
+              key={index}
+              style={{
+                width: 260,
+                height: 300,
+                borderWidth: 2,
+                borderColor: "#d35647",
+                resizeMode: "contain",
+                margin: 8,
+              }}
+            />
+          )}
+        />
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -34,16 +86,16 @@ const styles = StyleSheet.create({
     color: "white",
   },
   wrap: {
-    paddingTop: 100,
-    flex: 1,
+    paddingTop: 50,
     flexDirection: "row",
     gap: "2rem",
     flexWrap: "wrap",
     justifyContent: "space-evenly",
     backgroundColor: "black",
+    paddingBottom: 600,
   },
   item: {
-    backgroundColor: "white",
+    backgroundColor: "black",
     borderRadius: 10,
     justifyContent: "space-evenly",
     height: 125,
