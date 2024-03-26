@@ -1,10 +1,17 @@
-import React, { useState } from "react";
-import { View, Image, StyleSheet, Dimensions } from "react-native";
+
+import React, { useEffect, useState } from 'react';
+import { View, Image, Button, StyleSheet, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { useAuth } from './AuthContext'; // Adjust the path as necessary
 import { SearchBar } from "react-native-elements";
 
-const width = Dimensions.get("window").width;
 
+const width = Dimensions.get("window").width;  
+  
 const HomeScreen = () => {
+  const navigation = useNavigation();
+  const { user, logout } = useAuth();
+  
   const [search, setSearch] = useState("");
   const images = [
     { id: 1, loc: require("./images/drone.jpg"), name: "drone" },
@@ -29,6 +36,24 @@ const HomeScreen = () => {
       )
     : images;
 
+  useEffect(() => {
+    // Only attempt to set navigation options if the user object exists
+    if (user) {
+      navigation.setOptions({
+        headerTitle: `Hello, ${user.username}`,
+        headerRight: () => (
+          <Button onPress={() => logout()} title="Logout" color="#000" /> // Adjust button color as needed
+        ),
+      });
+    } else {
+      // Default options when no user is logged in
+      navigation.setOptions({
+        headerTitle: 'Welcome',
+        headerRight: null, // No logout button when no user is logged in
+      });
+    }
+  }, [navigation, user, logout]); // Re-run when user or logout changes
+  
   return (
     <View style={styles.container}>
       <SearchBar
