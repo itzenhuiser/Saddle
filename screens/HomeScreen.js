@@ -1,6 +1,7 @@
 import React, { Component, useState } from "react";
 import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import { SearchBar } from "react-native-elements";
+import { TextInput } from "react-native-gesture-handler";
 
 const [images, setimages] = useState([
   require("./images/drone.jpg"),
@@ -25,13 +26,11 @@ export default class HomeScreen extends React.Component {
 
     return (
       <View>
-        <SearchBar
-          style={(borderRadius = 5)}
+        <TextInput
+          placeholderTextColor="black"
           placeholder="Search"
-          onChangeText={this.updateSearch}
-          value={search}
-          autoCapitalize="none"
-          autoCorrect={false}
+          value={searchText}
+          onChangeText={(text) => searchFunction(text)}
         />
         <View style={styles.wrap}>
           <Image style={styles.item} source={require("./images/drone.jpg")} />
