@@ -1,11 +1,40 @@
-import React, { useEffect } from 'react';
-import { View, Image, Button, StyleSheet } from 'react-native';
+
+import React, { useEffect, useState } from 'react';
+import { View, Image, Button, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import { useAuth } from './AuthContext'; // Adjust the path as necessary
+import { SearchBar } from "react-native-elements";
 
+
+const width = Dimensions.get("window").width;  
+  
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { user, logout } = useAuth();
+  
+  const [search, setSearch] = useState("");
+  const images = [
+    { id: 1, loc: require("./images/drone.jpg"), name: "drone" },
+    {
+      id: 2,
+      loc: require("./images/iphone15black.jpg"),
+      name: "iphone15black",
+    },
+    { id: 3, loc: require("./images/goldfish.jpg"), name: "goldfish" },
+    { id: 4, loc: require("./images/ritz.jpg"), name: "ritz" },
+    { id: 5, loc: require("./images/cheezit.jpg"), name: "cheezit" },
+    { id: 6, loc: require("./images/oreo.jpg"), name: "oreo" },
+  ];
+
+  const updateSearch = (search) => {
+    setSearch(search);
+  };
+
+  const filteredImages = search
+    ? images.filter((image) =>
+        image.name.toLowerCase().includes(search.toLowerCase())
+      )
+    : images;
 
   useEffect(() => {
     // Only attempt to set navigation options if the user object exists
@@ -26,50 +55,52 @@ const HomeScreen = () => {
   }, [navigation, user, logout]); // Re-run when user or logout changes
   
   return (
-    <View style={styles.wrap}>
-      <Image style={styles.item} source={require("./images/drone.jpg")} />
-      <Image
-        style={styles.item}
-        source={require("./images/iphone15black.jpg")}
+    <View style={styles.container}>
+      <SearchBar
+        placeholder="Search"
+        onChangeText={updateSearch}
+        value={search}
+        containerStyle={styles.searchBarContainer}
+        inputContainerStyle={styles.searchBarInputContainer}
+        inputStyle={styles.searchBarInput}
+        placeholderTextColor="white"
       />
-      <Image style={styles.item} source={require("./images/goldfish.jpg")} />
-      <Image style={styles.item} source={require("./images/ritz.jpg")} />
-      <Image style={styles.item} source={require("./images/cheezit.jpg")} />
-      <Image style={styles.item} source={require("./images/oreo.jpg")} />
+      <View style={styles.wrap}>
+        {filteredImages.map((item) => (
+          <Image source={item.loc} style={styles.item} />
+        ))}
+      </View>
     </View>
   );
 };
 
-export default HomeScreen;
-
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100,
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "black",
+    paddingTop: 20,
   },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
+  searchBarInputContainer: {
+    backgroundColor: "black",
+    borderRadius: 10,
+  },
+  searchBarInput: {
     color: "white",
   },
   wrap: {
-    paddingTop: 100,
-    flex: 1,
+    paddingTop: 20,
     flexDirection: "row",
-    gap: "2rem",
     flexWrap: "wrap",
     justifyContent: "space-evenly",
-    backgroundColor: "black",
   },
   item: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    justifyContent: "space-evenly",
-    height: 125,
-    width: 125,
+    width: width * 0.3,
+    height: width * 0.3,
+    marginBottom: 8,
+    borderWidth: 2,
+    borderColor: "grey",
+    resizeMode: "contain",
   },
 });
+
+export default HomeScreen;
