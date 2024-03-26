@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Image, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import { useAuth } from './AuthContext'; // Adjust the path as necessary
+import ItemsTable from './Items';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -27,7 +28,8 @@ const HomeScreen = () => {
   
   return (
     <View style={styles.wrap}>
-      <Image style={styles.item} source={require("./images/drone.jpg")} />
+      <ItemsTable />
+      {/* <Image style={styles.item} source={require("./images/drone.jpg")} />
       <Image
         style={styles.item}
         source={require("./images/iphone15black.jpg")}
@@ -35,7 +37,7 @@ const HomeScreen = () => {
       <Image style={styles.item} source={require("./images/goldfish.jpg")} />
       <Image style={styles.item} source={require("./images/ritz.jpg")} />
       <Image style={styles.item} source={require("./images/cheezit.jpg")} />
-      <Image style={styles.item} source={require("./images/oreo.jpg")} />
+      <Image style={styles.item} source={require("./images/oreo.jpg")} /> */}
     </View>
   );
 };

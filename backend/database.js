@@ -11,7 +11,7 @@ app.use(cors());
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'password',
+  password: 'Herky.Hawk13',
   database: 'saddle_pos_system'
 });
 
@@ -25,7 +25,7 @@ db.connect(err => {
 });
 
 
-const PORT = 3000;
+const PORT = 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Function to pull all data from the Company table
@@ -60,3 +60,17 @@ app.post('/login', (req, res) => {
       }
     });
   });
+
+app.get('/items', (req, res) => {
+  const query = 'SELECT * FROM items';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send('Error getting items');
+    }
+    else {
+      console.log(results)
+      res.status(200).send(results);
+    }
+  })
+})
