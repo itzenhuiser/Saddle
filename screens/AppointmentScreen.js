@@ -32,10 +32,11 @@ const AppointmentScreen = () => {
           events={events}
           width={width}
           size={60}
-          initDate={"2024-03-25"}
+          initDate={"2024-03-26"}
           scrollToFirst={true}
           timeStart={8}
           timeEnd={24}
+          scrollEnabled={true}
         />
       </View>
     </SafeAreaView>
