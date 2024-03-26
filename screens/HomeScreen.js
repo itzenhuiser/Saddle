@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  FlatList,
-  Dimensions,
-} from "react-native";
+import { View, Image, StyleSheet, Dimensions } from "react-native";
 import { SearchBar } from "react-native-elements";
 
 const width = Dimensions.get("window").width;
