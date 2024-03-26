@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
 
@@ -91,5 +91,50 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+
+/*
+const axios = require('axios');
+
+// Define your credentials
+const CLIENT_ID = 'pk_dev_KOhMvTvHfPNEVlJ7wVrz2KTZ60tbo';
+const API_KEY = 'sk_dev_XUsf0zHk5i45bcK3y8Zt7Igm6UKVs';
+
+// Define the request data
+const requestData = {
+  delivery: {
+    message: 'March 26th'
+  },
+  amount: 1,
+  payee: {
+    country_code: '1',
+    phone_number: '8473408579'
+  }
+};
+
+// Define the request headers
+const headers = {
+  'Content-Type': 'application/json'
+};
+
+// Define the request config with basic authentication
+const config = {
+  auth: {
+    username: CLIENT_ID,
+    password: API_KEY
+  },
+  headers: headers
+};
+
+// Make the POST request
+axios.post('https://pls.senddotssandbox.com/api/v2/payouts/send-payout', requestData, config)
+  .then(response => {
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    console.error('Error:', error.response.data);
+  });
+
+*/
 
 export default PaymentScreen;
