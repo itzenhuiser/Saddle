@@ -16,6 +16,7 @@ import CreditPaymentScreen from "./screens/CreditPaymentScreen";
 
 const Drawer = createDrawerNavigator();
 const PaymentStack = createStackNavigator();
+const RootStack = createStackNavigator(); 
 
 function PaymentStackScreen() {
   return (
@@ -49,26 +50,20 @@ function PaymentStackScreen() {
   );
 }
 
-function CustomDrawerContent() {
-  const { user, logout } = useAuth();
 
-  // Determine initial route based on user's login status
-  const initialRoute = user ? "Home" : "Log In";
-
+function AppDrawer() {
   return (
+
     <Drawer.Navigator
-      initialRouteName={initialRoute}
+      initialRouteName="Home"
       screenOptions={{
-        backgroundColor: "black",
-        drawerActiveBackgroundColor: "grey",
-        drawerActiveTintColor: "white",
-        drawerInactiveTintColor: "white",
-        drawerStyle: {
+        headerShown: true,
+        headerStyle: {
           backgroundColor: "black",
         },
         headerTintColor: "white",
-        headerStyle: {
-          backgroundColor: "black",
+        headerTitleStyle: {
+          fontWeight: 'bold',
         },
       }}
     >
@@ -77,36 +72,32 @@ function CustomDrawerContent() {
       <Drawer.Screen name="Inventory" component={InventoryScreen} />
       <Drawer.Screen name="Appointment" component={AppointmentScreen} />
       <Drawer.Screen name="Settings" component={SettingsScreen} />
-      {user ? (
-        <Drawer.Screen
-          name="Logout"
-          component={View} // Dummy component for logout functionality
-          options={{
-            drawerLabel: "Log Out",
-            drawerItemStyle: { height: 0 },
-            title: "Logout",
-            headerShown: false,
-          }}
-          listeners={{
-            focus: () => {
-              logout();
-            },
-          }}
-        />
-      ) : (
-        <Drawer.Screen name="Log In" component={LogScreen} />
-      )}
     </Drawer.Navigator>
   );
 }
 
+// Define a new component that uses the useAuth hook
+function AuthenticatedApp() {
+  const { user } = useAuth();
+  return (
+    <NavigationContainer>
+      <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        {user ? (
+          // User is logged in, show the main app with drawer navigation
+          <RootStack.Screen name="AppDrawer" component={AppDrawer} />
+        ) : (
+          // User is not logged in, show the login screen
+          <RootStack.Screen name="LogIn" component={LogScreen} />
+        )}
+      </RootStack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 export default function App() {
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <CustomDrawerContent />
-      </NavigationContainer>
+      <AuthenticatedApp />
     </AuthProvider>
   );
 }

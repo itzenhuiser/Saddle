@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://localhost:3000/login', {
+      const response = await fetch('http://192.168.1.26:3000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,15 +42,19 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.textContainer}>
+        <Text style={styles.text}>Username:</Text>
+      </View>
       <TextInput
         style={styles.input}
-        placeholder="Username"
         value={username}
         onChangeText={setUsername}
       />
+      <View style={styles.textContainer}>
+  <     Text style={styles.text}>Password:</Text>
+      </View>
       <TextInput
         style={styles.input}
-        placeholder="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -73,9 +77,14 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 10,
+    textAlign: 'left',
+  },
+  textContainer: {
+    alignSelf: 'stretch', // this will make the container take the full width available
+    marginLeft: 40, // adjust the margin as needed to align the text as you like
   },
   input: {
     height: 40,
