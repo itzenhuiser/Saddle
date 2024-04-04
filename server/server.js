@@ -79,7 +79,9 @@ app.post('/create-payment-intent', async (req, res) => {
   // at https://dashboard.stripe.com/settings/payment_methods.
   //
   // Some example payment method types include `card`, `ideal`, and `link`.
-  let orderAmount = 1500;
+
+  let orderAmount = 1500; //PAYMENT AMOUNT IN CENTS !!!!!!!!!!!!!!!!!!!
+  
   let params = {};
 
   if (calculateTax) {
