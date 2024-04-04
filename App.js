@@ -49,13 +49,15 @@ function PaymentStackScreen() {
   );
 }
 
-// Custom Drawer Content that dynamically adjusts based on user's login status
 function CustomDrawerContent() {
   const { user, logout } = useAuth();
 
+  // Determine initial route based on user's login status
+  const initialRoute = user ? "Home" : "Log In";
+
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
+      initialRouteName={initialRoute}
       screenOptions={{
         backgroundColor: "black",
         drawerActiveBackgroundColor: "grey",
@@ -78,10 +80,9 @@ function CustomDrawerContent() {
       {user ? (
         <Drawer.Screen
           name="Logout"
-          component={View} // Dummy component
+          component={View} // Dummy component for logout functionality
           options={{
             drawerLabel: "Log Out",
-            // This is a workaround to provide a logout functionality. Adjust as needed.
             drawerItemStyle: { height: 0 },
             title: "Logout",
             headerShown: false,
@@ -98,6 +99,7 @@ function CustomDrawerContent() {
     </Drawer.Navigator>
   );
 }
+
 
 export default function App() {
   return (

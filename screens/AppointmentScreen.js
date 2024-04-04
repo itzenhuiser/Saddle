@@ -1,10 +1,45 @@
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, SafeAreaView, Dimensions } from "react-native";
+import EventCalendar from "react-native-events-calendar";
+
+let { width } = Dimensions.get("window");
 
 const AppointmentScreen = () => {
+  const [events, setEvents] = useState([
+    {
+      start: "2024-03-26 14:15:00",
+      end: "2024-03-26 14:30:00",
+      title: "Mid-Semester Presentation",
+      summary: "Zoom meeting w professors",
+    },
+    {
+      start: "2024-03-26 15:30:00",
+      end: "2024-03-26 17:20:00",
+      title: "Class",
+      summary: "Elements of 3D Design",
+    },
+  ]);
+
+  const eventPress = (event) => {
+    alert(JSON.stringify(event));
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Appointment Screen</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <EventCalendar
+          eventTapped={eventPress}
+          events={events}
+          width={width}
+          size={60}
+          initDate={"2024-03-26"}
+          scrollToFirst={true}
+          timeStart={8}
+          timeEnd={24}
+          scrollEnabled={true}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -16,11 +51,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "black",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "white",
   },
 });
