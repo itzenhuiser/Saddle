@@ -10,7 +10,7 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3000/items');
+      const response = await fetch('http://localhost:3001/items');
       const jsonData = await response.json();
       setItems(jsonData);
     } catch (error) {
