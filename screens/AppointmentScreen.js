@@ -43,6 +43,7 @@ const AppointmentScreen = () => {
           scrollToFirst={true}
           startTime={12}
           endTime={24}
+
         />
       </View>
     </SafeAreaView>

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
+
 const PaymentScreen = () => {
   const navigation = useNavigation();
 
@@ -11,7 +12,6 @@ const PaymentScreen = () => {
   const total_due = 100;
 
   const handleCashPayment = () => {
-    // Assuming 'totalDue' is the state or prop holding the total amount due
     navigation.navigate('CashPayment', { totalDue: total_due });
   };
 
