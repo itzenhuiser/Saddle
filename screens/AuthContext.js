@@ -1,4 +1,3 @@
-// src/context/AuthContext.js
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
@@ -10,7 +9,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userData) => {
     setUser(userData); // Set the user as logged in
-    // Here you can also handle token storage, etc.
   };
 
   const logout = () => {
