@@ -25,7 +25,7 @@ db.connect(err => {
 });
 
 
-const PORT = 4000;
+const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Function to pull all data from the Company table
@@ -69,7 +69,6 @@ app.get('/items', (req, res) => {
       res.status(500).send('Error getting items');
     }
     else {
-      console.log(results)
       res.status(200).send(results);
     }
   })

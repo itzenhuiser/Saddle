@@ -4,11 +4,15 @@ import { View, Image, Button, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import { useAuth } from './AuthContext'; // Adjust the path as necessary
 import ItemsTable from './Items';
+import CartDisplay from './CartDisplay';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { user, logout } = useAuth();
   
+  const [cart, updateCart] = useState({});
+  const [cartPrice, updateCartPrice] = useState(0.0); 
+
   const [search, setSearch] = useState("");
   const images = [
     { id: 1, loc: require("./images/drone.jpg"), name: "drone" },
@@ -49,11 +53,14 @@ const HomeScreen = () => {
         headerRight: null, // No logout button when no user is logged in
       });
     }
+    // navigation.navigate('Payment', { cartPrice: cartPrice });
   }, [navigation, user, logout]); // Re-run when user or logout changes
   
   return (
     <View style={styles.wrap}>
-      <ItemsTable />
+      <ItemsTable cart={cart} cartPrice={cartPrice} updateCartPrice={updateCartPrice} updateCart={updateCart}/>
+      <CartDisplay cart={cart} cartPrice={cartPrice}/>
+
       {/* <Image style={styles.item} source={require("./images/drone.jpg")} />
       <Image
         style={styles.item}
@@ -87,8 +94,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   item: {
-    width: width * 0.3,
-    height: width * 0.3,
+    width: 30,
+    height: 30,
     marginBottom: 8,
     borderWidth: 2,
     borderColor: "grey",
