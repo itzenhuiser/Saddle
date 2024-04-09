@@ -9,7 +9,8 @@ app.use(cors());
 
 // Create a MySQL connection
 const db = mysql.createConnection({
-  host: 'localhost',
+  //host: 'localhost',
+  host: '192.168.68.134',
   user: 'root',
   password: 'password',
   database: 'saddle_pos_system'
@@ -25,7 +26,7 @@ db.connect(err => {
 });
 
 
-const PORT = 3000;
+const PORT = 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Function to pull all data from the Company table

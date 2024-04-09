@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
 const PaymentScreen = ({route}) => {
@@ -16,7 +16,10 @@ const PaymentScreen = ({route}) => {
   };
 
   const handleCreditPayment = () => {
-    navigation.navigate('CreditPayment', { totalDue: total_due });
+    navigation.navigate('Home', { totalDue: total_due });
+    Linking.openURL('http://localhost:3000/card');
+
+
   };
 
   return (
