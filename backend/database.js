@@ -11,7 +11,7 @@ app.use(cors());
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Herky.Hawk13',
+  password: 'password',
   database: 'saddle_pos_system'
 });
 
