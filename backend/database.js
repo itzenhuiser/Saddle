@@ -25,7 +25,7 @@ db.connect(err => {
 });
 
 
-const PORT = 3000;
+const PORT = 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Function to pull all data from the Company table
