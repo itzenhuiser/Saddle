@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView, Dimensions } from "react-native";
+import { Button } from "react-native-elements";
 import EventCalendar from "react-native-events-calendar";
 
 let { width } = Dimensions.get("window");
@@ -24,18 +25,24 @@ const AppointmentScreen = () => {
     alert(JSON.stringify(event));
   };
 
+  const addEvent = (event) => {
+    alert(JSON.stringify(event));
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.button}>
+        <Button style={styles.button} title="+    " onPress={addEvent} />
+      </View>
       <View style={styles.container}>
         <EventCalendar
           eventTapped={eventPress}
           events={events}
           width={width}
           size={60}
-          initDate={"2024-03-25"}
           scrollToFirst={true}
-          timeStart={8}
-          timeEnd={24}
+          startTime={12}
+          endTime={24}
         />
       </View>
     </SafeAreaView>
@@ -50,5 +57,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "black",
+  },
+  button: {
+    alignSelf: "flex-end",
   },
 });
