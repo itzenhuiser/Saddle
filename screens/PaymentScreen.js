@@ -5,6 +5,7 @@ import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 
 
+
 const PaymentScreen = () => {
   const navigation = useNavigation();
 

@@ -97,6 +97,7 @@ const CashPaymentScreen = ({ route, navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Saddle</Text>
+        <Text style={styles.totalDue}>Total Due: ${totalDue}</Text>
       </View>
       <Text style={styles.prompt}>Enter Amount Given</Text>
       <TextInput 
@@ -148,6 +149,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  totalDue: {
+    color: 'white',
+    fontSize: 24,
+    marginVertical: 20,
+    borderWidth: 1,       
+    borderColor: 'white',
+    padding: 10, 
+    marginBottom: 20,
+  },
   headerText: {
     color: 'white',
     fontSize: 24,
@@ -157,6 +167,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 24,
     marginBottom: 20,
+    marginTop: 65,
   },
   input: {
     color: 'white',
