@@ -3,15 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, Button, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import { useAuth } from './AuthContext'; // Adjust the path as necessary
-import { SearchBar } from "react-native-elements";
+import ItemsTable from './Items';
+import CartDisplay from './CartDisplay';
 
-
-const width = Dimensions.get("window").width;  
-  
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { user, logout } = useAuth();
   
+  const [cart, updateCart] = useState({});
+  const [cartPrice, updateCartPrice] = useState(0.0); 
+
   const [search, setSearch] = useState("");
   const images = [
     { id: 1, loc: require("./images/drone.jpg"), name: "drone" },
@@ -52,24 +53,23 @@ const HomeScreen = () => {
         headerRight: null, // No logout button when no user is logged in
       });
     }
+    // navigation.navigate('Payment', { cartPrice: cartPrice });
   }, [navigation, user, logout]); // Re-run when user or logout changes
   
   return (
-    <View style={styles.container}>
-      <SearchBar
-        placeholder="Search"
-        onChangeText={updateSearch}
-        value={search}
-        containerStyle={styles.searchBarContainer}
-        inputContainerStyle={styles.searchBarInputContainer}
-        inputStyle={styles.searchBarInput}
-        placeholderTextColor="white"
+    <View style={styles.wrap}>
+      <ItemsTable cart={cart} cartPrice={cartPrice} updateCartPrice={updateCartPrice} updateCart={updateCart}/>
+      <CartDisplay cart={cart} cartPrice={cartPrice}/>
+
+      {/* <Image style={styles.item} source={require("./images/drone.jpg")} />
+      <Image
+        style={styles.item}
+        source={require("./images/iphone15black.jpg")}
       />
-      <View style={styles.wrap}>
-        {filteredImages.map((item) => (
-          <Image source={item.loc} style={styles.item} />
-        ))}
-      </View>
+      <Image style={styles.item} source={require("./images/goldfish.jpg")} />
+      <Image style={styles.item} source={require("./images/ritz.jpg")} />
+      <Image style={styles.item} source={require("./images/cheezit.jpg")} />
+      <Image style={styles.item} source={require("./images/oreo.jpg")} /> */}
     </View>
   );
 };
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   item: {
-    width: width * 0.3,
-    height: width * 0.3,
+    width: 30,
+    height: 30,
     marginBottom: 8,
     borderWidth: 2,
     borderColor: "grey",

@@ -61,3 +61,16 @@ app.post('/login', (req, res) => {
       }
     });
   });
+
+app.get('/items', (req, res) => {
+  const query = 'SELECT * FROM items';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send('Error getting items');
+    }
+    else {
+      res.status(200).send(results);
+    }
+  })
+})

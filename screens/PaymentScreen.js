@@ -1,16 +1,15 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
 import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
-
-
-
-const PaymentScreen = () => {
+const PaymentScreen = ({route}) => {
   const navigation = useNavigation();
+  // const route = useRoute();
+  const { cartPrice } = route.params || {cartPrice:0.0}; // Receive cartPrice from route params
 
-
-  const total_due = 100;
+  const total_due = cartPrice;
 
   const handleCashPayment = () => {
     navigation.navigate('CashPayment', { totalDue: total_due });
