@@ -75,7 +75,7 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
       for (let j = 0; j < 3 && i + j < items.length; j++) {
         const item = items[i + j];
         rowData.push(
-          <td key={item.ID} style={styles.text}>
+          <td key={item.item_id} style={styles.text}>
             {/* <div>ID: {item.ID}</div> */}
             <div>{item.item_name}</div>
             <div>{item.item_description}</div>
