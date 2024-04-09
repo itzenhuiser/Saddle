@@ -34,7 +34,7 @@ import Konbini from './Konbini';
 function App(props) {
   return (
     <>
-      <a href="http://localhost:8081">Back</a>
+      <a href="/">home</a>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<List />} />
