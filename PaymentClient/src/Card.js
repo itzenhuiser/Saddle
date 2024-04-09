@@ -58,12 +58,14 @@ const CardForm = () => {
       return;
     }
 
-    // Show a success message to your customer
-    // There's a risk of the customer closing the window before callback
-    // execution. Set up a webhook or plugin to listen for the
-    // payment_intent.succeeded event that handles any business critical
-    // post-payment actions.
-    addMessage(`Payment ${paymentIntent.status}: ${paymentIntent.id}`);
+    if (paymentIntent.status === 'succeeded') {
+      addMessage(`Payment ${paymentIntent.status}: ${paymentIntent.id}`);
+      // Only close the window if payment succeeded
+      window.close();
+    } else {
+      // Payment did not succeed, handle accordingly
+      addMessage(`Payment ${paymentIntent.status}: ${paymentIntent.id}`);
+    }
   };
 
   return (
