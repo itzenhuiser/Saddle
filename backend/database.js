@@ -104,20 +104,49 @@ app.post('/updatePoints', (req, res) => {
   });
 });
 
+app.post('/redeemPoints', (req, res) => {
+  const { phoneNumber, pointsToRedeem } = req.body;
+
+  const getPointsQuery = 'SELECT points FROM Customers WHERE phone_number = ?';
+
+  db.query(getPointsQuery, [phoneNumber], (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error finding customer' });
+    }
+
+    if (results.length > 0) {
+      let currentPoints = results[0].points;
+      if (currentPoints >= pointsToRedeem) {
+        let newPoints = currentPoints - pointsToRedeem;
+
+        const updatePointsQuery = 'UPDATE Customers SET points = ? WHERE phone_number = ?';
+        db.query(updatePointsQuery, [newPoints, phoneNumber], (updateErr, updateResults) => {
+          if (updateErr) {
+            return res.status(500).json({ message: 'Error updating points' });
+          } else {
+            return res.status(200).json({ message: 'Points redeemed successfully', newTotalDue: req.body.totalDue - 5 });
+          }
+        });
+      } else {
+        return res.status(400).json({ message: 'Not enough points to redeem' });
+      }
+    } else {
+      return res.status(404).json({ message: 'Customer not found. Please sign up for rewards.' });
+    }
+  });
+});
+
+
 app.post('/createAccount', (req, res) => {
-  const { firstName, lastName, phoneNumber } = req.body;
 
-  const query = `INSERT INTO Customers (first_name, last_name, phone_number, points) VALUES (?, ?, ?, 100)`;
+  const query = 'INSERT INTO Customers (first_name, last_name, phone_number, points) VALUES (?, ?, ?, ?)';
 
-  db.query(query, [firstName, lastName, phoneNumber], (err, results) => {
+  db.query(query, [req.body.first_name, req.body.last_name, req.body.phone_number, 100], (err, results) => {
     if (err) {
       res.status(500).json({ message: 'Error creating new customer account' });
     } else {
       res.status(200).json({
-        message: 'Customer account created successfully',
-        firstName,
-        lastName,
-        phoneNumber,
+        message: 'Customer account created successfully'
       });
     }
   });
