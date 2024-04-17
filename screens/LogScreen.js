@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { View, TextInput, Button, StyleSheet, Alert, Text } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity } from 'react-native';
 import { useAuth } from './AuthContext';
 
 
@@ -53,7 +53,7 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setUsername}
       />
       <View style={styles.textContainer}>
-  <     Text style={styles.text}>Password:</Text>
+        <Text style={styles.text}>Password:</Text>
       </View>
       <TextInput
         style={styles.input}
@@ -64,7 +64,9 @@ const LoginScreen = ({ navigation }) => {
       {loginFailed && (
         <Text style={styles.errorMessage}>Invalid credentials</Text>
       )}
-      <Button title="Login" onPress={handleLogin} />
+      <View style={styles.buttonContainer}>
+        <Button title="Login" onPress={handleLogin} />
+      </View>
 
     </View>
   );
@@ -80,28 +82,47 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 10,
-    textAlign: 'left',
   },
   textContainer: {
-    alignSelf: 'stretch', // this will make the container take the full width available
-    marginLeft: 40, // adjust the margin as needed to align the text as you like
+    alignSelf: 'stretch',
+    marginLeft: '10%',
+    marginRight: '10%', // added for right alignment
   },
   input: {
-    height: 40,
+    height: 50,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 20,
-    color: 'white', // Ensure text is visible against the black background
-    width: '80%', // Adjust based on your layout preferences
+    borderRadius: 5,
+    marginBottom: 15,
+    color: 'white',
+    width: '80%', // Width of input fields
+    fontSize: 18, // Optional: to match the size of the label
     padding: 10,
   },
   errorMessage: {
-    color: 'red', // This will make the message stand out against the black background
-    fontSize: 16, // Adjust the size as needed
-    marginTop: 5, // Add some space above the message
-    marginBottom: 10,
+    color: '#ff3b30', // iOS-style error color
+    fontSize: 14,
+    marginTop: -10,
+    marginBottom: 20,
+  },
+  button: {
+    width: '80%',
+    borderRadius: 25, // rounded corners for the button
+    padding: 10,
+    backgroundColor: '#1e90ff', // a blue color for the button
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2, // slight elevation for the button
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    width: '80%', // Match width with input fields
+    color: 'white',
   },
 });
 
