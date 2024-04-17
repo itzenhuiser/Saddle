@@ -1,13 +1,19 @@
 import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Linking, StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
 
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-
-const PaymentScreen = ({route}) => {
+const PaymentScreen = ({ route }) => {
   const navigation = useNavigation();
-  // const route = useRoute();
-  const { cartPrice } = route.params || {cartPrice:0.0}; // Receive cartPrice from route params
+  const { cart, cartPrice } = route.params || { cartPrice: 0.0, cart: {} };
+  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [showCreateAccountForm, setShowCreateAccountForm] = React.useState(false);
+  const [userDetails, setUserDetails] = React.useState({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+  });
 
   const total_due = cartPrice;
 
@@ -18,28 +24,178 @@ const PaymentScreen = ({route}) => {
   const handleCreditPayment = () => {
     navigation.navigate('Home', { totalDue: total_due });
     Linking.openURL('http://localhost:3000/card');
-
-
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Finish & Pay</Text>
-      <Text style={styles.totalDue}>Total Due: ${total_due.toFixed(2)}</Text>
-      <View style={styles.buttonContainer}>
+  const handleRewardsSubmission = async () => {
+    console.log(phoneNumber);
+    try {
+      const response = await fetch('http://localhost:3001/updatePoints', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber,
+          totalDue: total_due,
+        }),
+      });
+      
+      const json = await response.json();
+      
+      if (response.status === 404) {
+        // If phone number not found, ask user if they want to create an account
+        const createAccount = confirm(json.message + " Would you like to create an account?" + userDetails.phoneNumber);
+        if (createAccount) {
+          // Prompt for more details to create an account
+          const firstName = prompt("Enter your first name:");
+          const lastName = prompt("Enter your last name:");
+          const phoneNumber = prompt("Enter your phone number:");
+
+          if (firstName && lastName && phoneNumber) {
+            createUserAccount({ firstName, lastName, phoneNumber });
+          }
+        }
+      } else if (response.status === 200) {
+        // Handle successful points update
+        console.log('Submission successful:', json);
+        alert(`Points updated! Your new points total is ${json.newPoints}`);
+      } else {
+        // Handle other potential errors
+        console.error('An error occurred:', json.message);
+      }
+    } catch (error) {
+      console.error('Error submitting rewards:', error);
+    }
+  };
+
+  const createUserAccount = async (userDetails) => {
+    try {
+      const response = await fetch('http://localhost:3001/createAccount', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userDetails),
+      });
+  
+      if (response.ok) {
+        const json = await response.json();
+        // Provide some user feedback
+        alert(`Account created successfully! Welcome, ${json.firstName}!`);
+        // Perform additional actions upon successful account creation if necessary
+      } else {
+        // Provide some user feedback
+        alert('Failed to create an account. Please try again later.');
+      }
+    } catch (error) {
+      // Provide some user feedback
+      console.error('Error creating an account:', error);
+      alert('An error occurred while creating the account.');
+    }
+  };
+  
+
+  const handleCreateAccountPress = () => {
+    setShowCreateAccountForm(true); // This will display the create account form
+  };
+
+  const handleCreateAccountSubmit = async () => {
+    const userDetails = {
+      first_name: firstName,
+      last_name: lastName,
+      phone_number: phoneNumber,
+    };
+    alert(JSON.stringify(userDetails, null, 2));
+
+    await createUserAccount(userDetails);
+  
+    setFirstName('');
+    setLastName('');
+    setPhoneNumber('');
+    setShowCreateAccountForm(false);
+  };
+  
+
+return (
+  <View style={styles.container}>
+    <Text style={styles.title}>Finish & Pay</Text>
+    <View style={styles.receiptContainer}>
+      {Object.keys(cart).map((itemName) => (
+        <View key={itemName} style={styles.itemRow}>
+          <Text style={styles.itemDetails}>{itemName}</Text>
+          <Text style={styles.itemDetails}>Qty: {cart[itemName].quantity}</Text>
+          <Text style={styles.itemDetails}>@ ${cart[itemName].price} ea.</Text>
+        </View>
+      ))}
+    </View>
+    <Text style={styles.totalDue}>Total Due: ${total_due.toFixed(2)}</Text>
+    <Text style={styles.label}>Rewards?</Text>
+    <View style={styles.phoneNumberContainer}>
+      <TextInput
+        style={styles.input}
+        onChangeText={setPhoneNumber}
+        value={phoneNumber}
+        placeholder="Enter phone number"
+        keyboardType="phone-pad"
+      />
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={handleRewardsSubmission}
+      >
+        <Text style={styles.submitButtonText}>Submit</Text>
+      </TouchableOpacity>
+    </View>
+    {!showCreateAccountForm && (
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={handleCreateAccountPress}
+      >
+        <Text style={styles.submitButtonText}>Want to Create an Account?</Text>
+      </TouchableOpacity>
+    )}
+    {showCreateAccountForm && (
+      <View style={styles.createAccountSection}>
+        <TextInput
+          style={styles.createAccountInput}
+          onChangeText={setPhoneNumber}
+          value={phoneNumber}
+          placeholder="Enter phone number"
+          placeholderTextColor="#b1b1b1"
+          keyboardType="phone-pad"
+        />
+        <TextInput
+          style={styles.createAccountInput}
+          onChangeText={setFirstName}
+          value={firstName}
+          placeholder="Enter first name"
+          placeholderTextColor="#b1b1b1"
+        />
+        <TextInput
+          style={styles.createAccountInput}
+          onChangeText={setLastName}
+          value={lastName}
+          placeholder="Enter last name"
+          placeholderTextColor="#b1b1b1"
+        />
         <TouchableOpacity
-          style={styles.button}
-          onPress={handleCashPayment} >
-          <Text style={styles.buttonText}>Cash</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={handleCreditPayment} >
-          <Text style={styles.buttonText}>Credit</Text>
+          style={styles.submitButton}
+          onPress={handleCreateAccountSubmit}
+        >
+          <Text style={styles.submitButtonText}>Create Account</Text>
         </TouchableOpacity>
       </View>
+    )}
+    <View style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.button} onPress={handleCashPayment}>
+        <Text style={styles.buttonText}>Cash</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleCreditPayment}>
+        <Text style={styles.buttonText}>Credit</Text>
+      </TouchableOpacity>
     </View>
-  );
+  </View>
+);
+  
 };
 
 const styles = StyleSheet.create({
@@ -47,51 +203,117 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingVertical: 50,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    width: '100%',
-    backgroundColor: 'black',
-    alignItems: 'center',
-    padding: 20,
-  },
-  headerText: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
+    paddingTop: 30,
   },
   title: {
     color: 'white',
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  receiptContainer: {
+    backgroundColor: '#1C1C1E',
+    padding: 15,
+    borderRadius: 8,
+    width: '90%',
+    marginVertical: 10,
+  },
+  itemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 4,
+  },
+  itemDetails: {
+    color: 'white',
+    fontSize: 16,
   },
   totalDue: {
-    color: 'white',
-    fontSize: 24,
-    marginVertical: 20,
-    borderWidth: 1,       // Set the width of the border
-    borderColor: 'white', // Set the color of the border to white
-    padding: 10, 
+    color: '#4CAF50',
+    fontSize: 20,
+    marginVertical: 15,
+    fontWeight: 'bold',
   },
-
+  label: {
+    color: 'white',
+    fontSize: 18,
+    marginTop: 20,
+    alignSelf: 'flex-start',
+    marginLeft: '5%',
+  },
+  input: {
+    height: 45,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    color: 'white',
+    backgroundColor: '#262626',
+    width: '85%',
+    marginTop: 10,
+  },
+  phoneNumberContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  submitButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 5,
+    marginVertical: 15,
+  },
+  submitButtonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+  },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    justifyContent: 'space-evenly',
+    width: '90%',
+    marginTop: 20,
   },
   button: {
-    backgroundColor: 'white',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+    backgroundColor: '#262626',
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 5,
+    flex: 1,
+    marginHorizontal: 10,
   },
   buttonText: {
-    fontSize: 18,
-    color: 'black',
+    fontSize: 16,
+    color: '#4CAF50',
     textAlign: 'center',
+  },
+  createAccountContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  createAccountSection: {
+    borderColor: '#4CAF50', // Adjust the color as needed
+    borderWidth: 2,
+    borderRadius: 5,
+    padding: 20,
+    width: '90%',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20, // Add spacing at the bottom as well
+  },
+  
+  
+  // Style for the new phone number input inside the create account section
+  createAccountInput: {
+    height: 45,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    color: 'white',
+    backgroundColor: '#262626',
+    width: '100%',
+    marginBottom: 10,
   },
 });
 

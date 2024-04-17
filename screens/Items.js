@@ -25,11 +25,12 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
       // If the item already exists in the cart, increase the quantity by one
       cart[itemName] = {
         ...existingItem,
-        quantity: existingItem.quantity + 1
+        quantity: existingItem.quantity + 1,
+        price: itemPrice
       };
     } else {
       // If the item is not in the cart, add it with quantity 1
-      cart[itemName] = { quantity: 1 };
+      cart[itemName] = { quantity: 1, price: itemPrice };
     }
 
     // Add the item price to the cartPrice

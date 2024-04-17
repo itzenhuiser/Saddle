@@ -12,8 +12,15 @@ function CartDisplay({ cart, cartPrice }) {
   const formattedCartPrice = cartPrice.toFixed(2);
 
   const handleNavigateToPayment = () => {
-    navigation.navigate('PaymentFlow', { screen: 'Payment', params: { cartPrice: cartPrice } });
+    navigation.navigate('PaymentFlow', {
+      screen: 'Payment',
+      params: { 
+        cartPrice: cartPrice,
+        cart: cart
+      }
+    });
   };
+  
 
   return (
     <div>
