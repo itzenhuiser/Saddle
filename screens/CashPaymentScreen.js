@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
 import { StackActions, CommonActions } from '@react-navigation/native';
+import axios from 'axios';
 
 
 
@@ -8,7 +9,7 @@ const CashPaymentScreen = ({ route, navigation }) => {
   const [amountGiven, setAmountGiven] = useState('');
   const [changeDue, setChangeDue] = useState('');
   const [showDigitalChangeButton, setShowDigitalChangeButton] = useState(false);
-
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   // Assuming the total amount due is passed from the previous screen
   const { totalDue } = route.params;
@@ -27,9 +28,57 @@ const CashPaymentScreen = ({ route, navigation }) => {
     }
   };
 
-  const handleDigitalChangeReturn = () => {
-    // Functionality to be added later
+  const handleDigitalChangeReturn = async () => {
+    const numericChangeDue = changeDue.replace(/[^\d.]/g, '');
+    const changeDueInCents = parseFloat(numericChangeDue) * 100;    console.log(changeDue)
+    console.log(changeDueInCents);
+
+    if (phoneNumber.length === 10) { // Basic validation for US phone numbers
+      // Define the request data
+      const requestData = {
+        delivery: {
+          message: 'March 26th'
+        },
+        amount: changeDueInCents,
+        payee: {
+          country_code: '1',
+          phone_number: phoneNumber
+        }
+      };
+
+      // Define the request headers
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+
+      // Define the request config with basic authentication
+      const config = {
+        auth: {
+          username: 'pk_dev_KOhMvTvHfPNEVlJ7wVrz2KTZ60tbo',
+          password: 'sk_dev_XUsf0zHk5i45bcK3y8Zt7Igm6UKVs'
+        },
+        headers: headers
+      };
+
+      try {
+        const response = await axios.post('https://pls.senddotssandbox.com/api/v2/payouts/send-payout', requestData, config);
+        console.log('Response:', response.data);
+        console.log('Success', 'Digital change sent successfully.');
+      } catch (error) {
+        console.error('Error:', error?.response?.data || error);
+        console.error('Error', 'There was an issue sending digital change.');
+      }
+    } else {
+      Alert.alert('Error', 'Please enter a valid 10-digit phone number.');
+    }
+    navigation.dispatch(
+      CommonActions.reset({
+      index: 0,
+      routes: [{ name: 'Home' }],
+    })
+  );
   };
+
 
   const handleDone = () => {
     setAmountGiven('');
@@ -44,14 +93,11 @@ const CashPaymentScreen = ({ route, navigation }) => {
     );
   };
   
-
-
-
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Saddle</Text>
+        <Text style={styles.totalDue}>Total Due: ${totalDue}</Text>
       </View>
       <Text style={styles.prompt}>Enter Amount Given</Text>
       <TextInput 
@@ -67,15 +113,25 @@ const CashPaymentScreen = ({ route, navigation }) => {
       </TouchableOpacity>
       {changeDue ? <Text style={styles.changeDueText}>{changeDue}</Text> : null}
       {showDigitalChangeButton && (
-        <TouchableOpacity style={styles.button1} onPress={handleDigitalChangeReturn}>
-          <Text style={styles.buttonText}>Digital Change Return</Text>
-        </TouchableOpacity>
+        <>
+          <TextInput 
+            style={[styles.input, {marginTop: 20}]} // Add marginTop for spacing
+            value={phoneNumber} 
+            onChangeText={setPhoneNumber} 
+            keyboardType="phone-pad" 
+            placeholder="Enter Phone Number"
+            placeholderTextColor="#808080"
+          />
+          <TouchableOpacity style={[styles.button1, {marginTop: 20}]} onPress={handleDigitalChangeReturn}>
+            <Text style={styles.buttonText}>Send Digital Change</Text>
+          </TouchableOpacity>
+        </>
       )}
       <TouchableOpacity style={[styles.button, styles.doneButton]} onPress={handleDone}>
         <Text style={styles.buttonText}>Done</Text>
       </TouchableOpacity>
     </View>
-  );
+  );  
 };
 
 const styles = StyleSheet.create({
@@ -93,6 +149,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  totalDue: {
+    color: 'white',
+    fontSize: 24,
+    marginVertical: 20,
+    borderWidth: 1,       
+    borderColor: 'white',
+    padding: 10, 
+    marginBottom: 20,
+  },
   headerText: {
     color: 'white',
     fontSize: 24,
@@ -102,6 +167,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 24,
     marginBottom: 20,
+    marginTop: 65,
   },
   input: {
     color: 'white',
