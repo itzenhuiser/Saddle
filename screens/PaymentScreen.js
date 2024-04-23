@@ -1,6 +1,7 @@
 import React from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, CommonActions } from '@react-navigation/native';
 import { Linking, StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView } from 'react-native';
+
 
 const PaymentScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -12,6 +13,8 @@ const PaymentScreen = ({ route }) => {
   const [lastName, setLastName] = React.useState('');
   const [showCreateAccountForm, setShowCreateAccountForm] = React.useState(false);
   const [totalDue, setTotalDue] = React.useState(cartPrice);
+  const [cartState, setCartState] = React.useState(cart);
+
 
   const [userDetails, setUserDetails] = React.useState({
     firstName: '',
@@ -24,8 +27,26 @@ const PaymentScreen = ({ route }) => {
     navigation.navigate('CashPayment', { totalDue: totalDue });
   };
 
+  const clearCart = () => {
+    setCartState({});
+    setTotalDue(0);   
+  };
+
   const handleCreditPayment = () => {
-    navigation.navigate('Home', { totalDue: totalDue });
+    // Clear the cart state first
+    // If using local state, it might look like this:
+    setCartState({}); // Assuming you have a setter function from useState or useContext
+    setTotalDue(0);   // Reset the total due
+  
+    // Then reset navigation to prevent going back
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Home', params: { cartCleared: true } }],
+      })
+    );
+  
+    // Optionally open a URL if needed
     Linking.openURL('http://localhost:3000/card');
   };
 
