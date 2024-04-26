@@ -58,18 +58,12 @@ const HomeScreen = () => {
   
   return (
     <View style={styles.wrap}>
-      <ItemsTable cart={cart} cartPrice={cartPrice} updateCartPrice={updateCartPrice} updateCart={updateCart}/>
-      <CartDisplay cart={cart} cartPrice={cartPrice}/>
-
-      {/* <Image style={styles.item} source={require("./images/drone.jpg")} />
-      <Image
-        style={styles.item}
-        source={require("./images/iphone15black.jpg")}
-      />
-      <Image style={styles.item} source={require("./images/goldfish.jpg")} />
-      <Image style={styles.item} source={require("./images/ritz.jpg")} />
-      <Image style={styles.item} source={require("./images/cheezit.jpg")} />
-      <Image style={styles.item} source={require("./images/oreo.jpg")} /> */}
+      <View style={{ flex: 0.75 }}> {/* 75% width for ItemsTable */}
+        <ItemsTable cart={cart} cartPrice={cartPrice} updateCartPrice={updateCartPrice} updateCart={updateCart}/>
+      </View>
+      <View style={{ flex: 0.25 }}> {/* 25% width for CartDisplay */}
+        <CartDisplay cart={cart} cartPrice={cartPrice} updateCartPrice={updateCartPrice} updateCart={updateCart}/>
+      </View>
     </View>
   );
 };
@@ -78,7 +72,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    paddingTop: 20,
+    paddingBottom: 0,
   },
   searchBarInputContainer: {
     backgroundColor: "black",
@@ -88,10 +82,11 @@ const styles = StyleSheet.create({
     color: "white",
   },
   wrap: {
-    paddingTop: 20,
+    padding: 0,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-evenly",
+    backgroundColor: "white"
   },
   item: {
     width: 30,

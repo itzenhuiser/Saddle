@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Button, StyleSheet, Alert, Text } from 'react-native';
+import { View, Image, Button, StyleSheet, Alert, Dimensions } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
   const [items, setItems] = useState([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isFocused){
+      fetchData();
+    }
+  }, [isFocused]);
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3001/items');
+      const response = await fetch('http://localhost:3001/itemsavailible');
       const jsonData = await response.json();
       setItems(jsonData);
     } catch (error) {
@@ -18,16 +22,21 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
     }
   };
 
-  const addCart = (itemName, itemPrice) => {
+  const addCart = (itemName, itemPrice, itemQuantity) => {
     const existingItem = cart[itemName];
-
+    
     if (existingItem) {
-      // If the item already exists in the cart, increase the quantity by one
-      cart[itemName] = {
-        ...existingItem,
-        quantity: existingItem.quantity + 1,
-        price: itemPrice
-      };
+      if (existingItem.quantity < itemQuantity) {
+        // If the item already exists in the cart and quantity limit not reached, increase the quantity by one
+        cart[itemName] = {
+          ...existingItem,
+          quantity: existingItem.quantity + 1,
+          price: itemPrice
+        };
+      } else {
+        // Handle case where quantity limit is reached
+        Alert.alert('Quantity limit reached for item:', itemName);
+      }
     } else {
       // If the item is not in the cart, add it with quantity 1
       cart[itemName] = { quantity: 1, price: itemPrice };
@@ -65,7 +74,6 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
   }
   
   const renderGridRows = () => {
-    console.log(items);
     if (!Array.isArray(items)) {
       return null;
     }
@@ -73,17 +81,23 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
     const rows = [];
     for (let i = 0; i < items.length; i += 3) {
       const rowData = [];
-      for (let j = 0; j < 3 && i + j < items.length; j++) {
+      for (let j = 0; j < 4 && i + j < items.length; j++) {
         const item = items[i + j];
         rowData.push(
           <td key={item.item_id} style={styles.text}>
             {/* <div>ID: {item.ID}</div> */}
-            <div>{item.item_name}</div>
-            <div>{item.item_description}</div>
-            <div>{item.item_price}</div>
-            <Image style={styles.item} source={item.image_picture} />
-            <Button title="Add" onPress={() => addCart(item.item_name, item.item_price)} style={styles.add_button}/>
-            <Button title="Remove" onPress={() => removeCart(item.item_name, item.item_price)} style={styles.remove_button}/>
+            <div style={{ fontWeight: 'bold', fontSize: 20, backgroundColor: 'lightblue', padding: 5, borderRadius: 5, textTransform: 'capitalize' }}>{item.item_name}</div>
+            <div>{item.item_description.charAt(0).toUpperCase() + item.item_description.slice(1)}</div>
+            <div style={{ fontWeight: 'bold' }}>${item.item_price}</div>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image style={styles.item} source={item.image_picture} />
+              <View style={{ height: '100%', marginRight: 10 }}></View>
+              <View style={{ flexDirection: 'column' }}>
+                <Button title="Add" color = "green" onPress={() => addCart(item.item_name, item.item_price, item.item_quantity)}/>
+                <View style={{ width: '100%', marginBottom: 5 }}></View>
+                <Button title="Remove" color = "red" onPress={() => removeCart(item.item_name, item.item_price)} style={styles.remove_button}/>
+              </View>
+            </View>
           </td>
         );
       }
@@ -95,7 +109,6 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
 
   return (
     <div style={styles.table_div}>
-      <h2>Items Table</h2>
       <table>
         <tbody>
           {renderGridRows()}
@@ -109,20 +122,26 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
 
 const styles = StyleSheet.create({
   table_div: {
-     height: '400px', 
+     height: '100vh', 
      overflowY: 'scroll' 
   },
   text: {
-    color: 'black',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
+  color: 'black',
+  fontSize: 18, // Adjust the font size as needed
+  fontWeight: 'normal', // Change the font weight if desired
+  marginBottom: 10, // Adjust the spacing between items
+  padding: 10, // Add padding to the text container
+  border: '1px solid #ccc', // Add a border around each item
+  borderRadius: 5, // Add rounded corners
+  backgroundColor: '#f9f9f9', // Set a background color for better readability
+},
   add_button: {
     backgroundColor: "green",
+    color: "white"
   },
   remove_button: {
     backgroundColor: "red",
+    color: "white"
   },
   errorMessage: {
     color: 'red', // This will make the message stand out against the black background
