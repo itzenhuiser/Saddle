@@ -79,7 +79,7 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
     }
   
     const rows = [];
-    for (let i = 0; i < items.length; i += 3) {
+    for (let i = 0; i < items.length; i += 4) {
       const rowData = [];
       for (let j = 0; j < 4 && i + j < items.length; j++) {
         const item = items[i + j];
@@ -90,7 +90,7 @@ function ItemsTable({cart, cartPrice, updateCartPrice, updateCart}) {
             <div>{item.item_description.charAt(0).toUpperCase() + item.item_description.slice(1)}</div>
             <div style={{ fontWeight: 'bold' }}>${item.item_price}</div>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Image style={styles.item} source={item.image_picture} />
+              <Image style={styles.item} source={require(`./images/${item.item_name}.jpg`)} /> 
               <View style={{ height: '100%', marginRight: 10 }}></View>
               <View style={{ flexDirection: 'column' }}>
                 <Button title="Add" color = "green" onPress={() => addCart(item.item_name, item.item_price, item.item_quantity)}/>

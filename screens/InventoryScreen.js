@@ -175,7 +175,7 @@ function InventoryScreen() {
           </div>
             <div style={{ fontWeight: 'bold', fontSize: 20, backgroundColor: 'lightblue', padding: 5, borderRadius: 5, textTransform: 'capitalize' }}>{item.item_name}</div>
             <div style={{ fontWeight: 'bold' }}>Quantity: {item.item_quantity}</div>
-            <Image style={styles.item} source={item.image_picture} />
+            <Image style={styles.item} source={require(`./images/${item.item_name}.jpg`)} />
           </td>
         );
       }
@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: 'green',
+    color: 'white',
     borderRadius: 5,
     padding: 10,
     margin: 10,
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     padding: 10,
     backgroundColor: 'red',
-    color: 'whtie',
+    color: 'white',
     borderRadius: '25%',
   },
 });

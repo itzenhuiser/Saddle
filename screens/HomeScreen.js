@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { View, Image, Button, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
@@ -14,28 +13,10 @@ const HomeScreen = () => {
   const [cartPrice, updateCartPrice] = useState(0.0); 
 
   const [search, setSearch] = useState("");
-  const images = [
-    { id: 1, loc: require("./images/drone.jpg"), name: "drone" },
-    {
-      id: 2,
-      loc: require("./images/iphone15black.jpg"),
-      name: "iphone15black",
-    },
-    { id: 3, loc: require("./images/goldfish.jpg"), name: "goldfish" },
-    { id: 4, loc: require("./images/ritz.jpg"), name: "ritz" },
-    { id: 5, loc: require("./images/cheezit.jpg"), name: "cheezit" },
-    { id: 6, loc: require("./images/oreo.jpg"), name: "oreo" },
-  ];
 
   const updateSearch = (search) => {
     setSearch(search);
   };
-
-  const filteredImages = search
-    ? images.filter((image) =>
-        image.name.toLowerCase().includes(search.toLowerCase())
-      )
-    : images;
 
   useEffect(() => {
     // Only attempt to set navigation options if the user object exists
