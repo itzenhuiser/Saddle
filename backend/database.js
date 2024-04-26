@@ -12,7 +12,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   // host: '192.168.68.134',
   user: 'root',
-  password: 'password',
+  password: 'Herky.Hawk13',
   database: 'saddle_pos_system'
 });
 
@@ -61,8 +61,71 @@ app.post('/login', (req, res) => {
     });
   });
 
+  app.post('/updateinventory', (req, res) => {
+    const cartData = req.body;
+    // Iterate over each item in the cart and update the item_quantity in the database
+    Object.keys(cartData).forEach(itemName => {
+      const quantity = cartData[itemName].quantity;
+      
+      const updateQuery = 'UPDATE items SET item_quantity = item_quantity - ? WHERE item_name = ?';
+      
+      db.query(updateQuery, [quantity, itemName], (err, results) => {
+        if (err) {
+          console.error('Error updating item quantity for:', itemName, err);
+        }
+      });
+    });
+  
+    res.status(200).send('Inventory updated successfully');
+  });
+
+app.post('/removeitem', (req, res) => {
+  const { itemName } = req.body;
+
+  const deleteQuery = 'DELETE FROM items WHERE item_name = ?';
+
+  db.query(deleteQuery, [itemName], (err, results) => {
+    if (err) {
+      console.error('Error removing item:', itemName, err);
+      res.status(500).send('Error removing item from inventory');
+    } else {
+      console.log('Item removed successfully:', itemName);
+      res.status(200).send('Item removed from inventory');
+    }
+  });
+});
+
+app.post('/additem', (req, res) => {
+  const { itemName, itemPrice, itemQuantity, itemDescription, itemImage } = req.body;
+
+  const insertQuery = 'INSERT INTO items (item_name, item_price, item_quantity, item_description, image_picture) VALUES (?, ?, ?, ?, ?)';
+
+  db.query(insertQuery, [itemName, itemPrice, itemQuantity, itemDescription, itemImage], (err, results) => {
+    if (err) {
+      console.error('Error adding item:', itemName, err);
+      res.status(500).send('Error adding item to inventory');
+    } else {
+      console.log('Item added successfully:', itemName);
+      res.status(200).send('Item added to inventory');
+    }
+  });
+});
+
 app.get('/items', (req, res) => {
   const query = 'SELECT * FROM items';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send('Error getting items');
+    }
+    else {
+      res.status(200).send(results);
+    }
+  })
+})
+
+app.get('/itemsavailible', (req, res) => {
+  const query = 'SELECT * FROM items WHERE item_quantity <> 0';
 
   db.query(query, (err, results) => {
     if (err) {
