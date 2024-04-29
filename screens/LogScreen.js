@@ -44,6 +44,8 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Saddle</Text>
+
       <View style={styles.textContainer}>
         <Text style={styles.text}>Username:</Text>
       </View>
@@ -78,6 +80,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'black',
+  },
+  title: {
+    color: 'white',
+    fontSize: 40, // You can adjust the size as needed
+    fontWeight: 'bold', // This makes the text bold
+    marginBottom: 40, // Add some space below the title
   },
   text: {
     color: 'white',
