@@ -33,12 +33,10 @@ const PaymentScreen = ({ route }) => {
   };
 
   const handleCreditPayment = () => {
-    // Clear the cart state first
-    // If using local state, it might look like this:
-    setCartState({}); // Assuming you have a setter function from useState or useContext
-    setTotalDue(0);   // Reset the total due
+ 
+    setCartState({});
+    setTotalDue(0);   
   
-    // Then reset navigation to prevent going back
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -46,7 +44,6 @@ const PaymentScreen = ({ route }) => {
       })
     );
   
-    // Optionally open a URL if needed
     Linking.openURL('http://localhost:3000/card');
   };
 
@@ -67,19 +64,10 @@ const PaymentScreen = ({ route }) => {
       const json = await response.json();
       
       if (response.status === 404) {
-        // If phone number not found, ask user if they want to create an account
-        const createAccount = confirm(json.message + " Would you like to create an account?" + userDetails.phoneNumber);
-        if (createAccount) {
-          // Prompt for more details to create an account
-          const firstName = prompt("Enter your first name:");
-          const lastName = prompt("Enter your last name:");
-          const phoneNumber = prompt("Enter your phone number:");
-
-          if (firstName && lastName && phoneNumber) {
-            createUserAccount({ firstName, lastName, phoneNumber });
-          }
-        }
-      } else if (response.status === 200) {
+        alert("User not found, please create new rewards account.");
+        
+      } 
+      else if (response.status === 200) {
         // Handle successful points update
         console.log('Submission successful:', json);
         alert(`Points updated! Your new points total is ${json.newPoints}`);

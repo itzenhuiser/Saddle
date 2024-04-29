@@ -12,7 +12,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   // host: '192.168.68.134',
   user: 'root',
-  password: 'Herky.Hawk13',
+  password: 'password',
   database: 'saddle_pos_system'
 });
 
