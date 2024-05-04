@@ -102,14 +102,14 @@ const AppointmentScreen = () => {
                 onChangeText={setEventDate}
               />
               <TextInput
-                placeholder="hh-mm in 24hr"
+                placeholder="hh:mm in 24hr"
                 placeholderTextColor="gray"
                 style={styles.input}
                 value={eventStart}
                 onChangeText={setEventStart}
               />
               <TextInput
-                placeholder="hh-mm in 24hr"
+                placeholder="hh:mm in 24hr"
                 placeholderTextColor="gray"
                 style={styles.input}
                 value={eventEnd}

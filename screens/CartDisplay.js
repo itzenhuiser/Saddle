@@ -20,7 +20,7 @@ function CartDisplay({cart, cartPrice, updateCartPrice, updateCart}) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(cartData),
+        body: JSON.stringify(cartData, cartPrice),
       });
   
       if (response.ok) {
